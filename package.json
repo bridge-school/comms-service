@@ -1,0 +1,21 @@
+{
+  "name": "comms-service",
+  "version": "0.0.0",
+  "description": "Communications services",
+  "main": "handler.js",
+  "scripts": {
+    "start": "nodemon --exec \"serverless offline --port 3001\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "aws-sdk": "^2.469.0",
+    "nodemon": "^1.19.1",
+    "serverless": "^1.44.1",
+    "serverless-offline": "^5.0.1"
+  },
+  "dependencies": {
+    "nodemailer": "^6.2.1"
+  }
+}
