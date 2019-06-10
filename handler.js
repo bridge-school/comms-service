@@ -2,30 +2,26 @@
 const nodemailer = require("nodemailer");
 const aws = require("aws-sdk");
 
-module.exports.hello = async event => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: "Go Serverless v1.0! Your function executed successfully!",
-        input: event
-      },
-      null,
-      2
-    )
-  };
-
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
-};
-
 module.exports.email = async event => {
+  const testAccount = await nodemailer.createTestAccount();
   // create Nodemailer SES transporter
-  const transporter = nodemailer.createTransport({
-    SES: new aws.SES({
-      apiVersion: "2010-12-01"
-    })
-  });
+  const transporter =
+    process.env.NODE_ENV === "development"
+      ? nodemailer.createTransport({
+          host: "smtp.ethereal.email",
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: testAccount.user, // generated ethereal user
+            pass: testAccount.pass // generated ethereal password
+          }
+        })
+      : nodemailer.createTransport({
+          SES: new aws.SES({
+            apiVersion: "2010-12-01"
+          })
+        });
+
   const { email, firstName, lastName } = JSON.parse(event.body);
 
   // send some mail
