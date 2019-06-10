@@ -17,6 +17,7 @@
     "serverless-offline": "^5.0.1"
   },
   "dependencies": {
+    "@slack/client": "^5.0.1",
     "nodemailer": "^6.2.1"
   }
 }

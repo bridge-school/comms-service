@@ -1,6 +1,33 @@
 "use strict";
 const nodemailer = require("nodemailer");
 const aws = require("aws-sdk");
+const { WebClient } = require("@slack/client");
+
+module.exports.slackNewApplication = async event => {
+  const token = process.env.SLACK_TOKEN;
+  const web = new WebClient(token);
+  try {
+    await web.chat.postMessage({
+      channel: "application-notis",
+      attachments: [
+        {
+          text: "New application from me!",
+          footer: "New application for cohort 10033"
+        }
+      ]
+    });
+    return {
+      statusCode: 200
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: error.message
+      })
+    };
+  }
+};
 
 module.exports.email = async event => {
   const testAccount = await nodemailer.createTestAccount();
@@ -32,6 +59,13 @@ module.exports.email = async event => {
       subject: `Thanks for applying ${firstName}!`,
       text: `Thank you for applying to Bridge, ${firstName}. We'll be in touch shortly!`
     });
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: "mail sent"
+      })
+    };
   } catch (error) {
     return {
       statusCode: 500,
@@ -40,11 +74,4 @@ module.exports.email = async event => {
       })
     };
   }
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: "mail sent"
-    })
-  };
 };

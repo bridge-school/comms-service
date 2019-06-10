@@ -1,5 +1,8 @@
 service: comms-service
 
+custom:
+  secrets: ${file(secrets.json)}
+
 plugins:
   - serverless-offline
 
@@ -12,6 +15,8 @@ provider:
       Action:
         - "ses:SendRawEmail"
       Resource: "*"
+  environment:
+    SLACK_TOKEN: ${self:custom.secrets.slackToken} # Slack Token
 
 functions:
   email:
@@ -19,5 +24,12 @@ functions:
     events:
       - http:
           path: email
+          method: post
+          cors: true
+  slackNewApplication:
+    handler: handler.slackNewApplication
+    events:
+      - http:
+          path: slack-notification
           method: post
           cors: true
